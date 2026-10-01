@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Claude Smart Router</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>Smart Router</h1>
+    <label class="switch" title="Pause or resume routing">
+      <input type="checkbox" id="enabled" />
+      <span class="track"></span>
+    </label>
+  </header>
+
+  <section class="modes" role="radiogroup" aria-label="Routing mode">
+    <button class="mode" data-mode="saver" role="radio" aria-checked="false">Saver</button>
+    <button class="mode" data-mode="balanced" role="radio" aria-checked="false">Balanced</button>
+    <button class="mode" data-mode="quality" role="radio" aria-checked="false">Quality</button>
+  </section>
+  <p class="mode-hint" id="modeHint"></p>
+
+  <section class="meter" aria-label="Difficulty bands for the current mode">
+    <div class="bands">
+      <div class="band haiku" id="bandHaiku"><span>Haiku</span></div>
+      <div class="band sonnet" id="bandSonnet"><span>Sonnet</span></div>
+      <div class="band opus" id="bandOpus"><span>Opus</span></div>
+      <div class="band fable" id="bandFable"><span>Fable</span></div>
+    </div>
+    <div class="marker" id="marker" hidden><div class="pin"></div><div class="tag" id="markerTag"></div></div>
+    <div class="scale"><span>easy</span><span>hard</span></div>
+  </section>
+
+  <section class="try">
+    <textarea id="tryPrompt" rows="2" placeholder="Paste a prompt to see where it would land"></textarea>
+    <div class="try-out" id="tryOut"></div>
+  </section>
+
+  <section class="stats">
+    <div class="big">
+      <div class="num" id="savings">—</div>
+      <div class="lbl">estimated cost saved vs. always using <span id="baselineName">Sonnet</span></div>
+    </div>
+    <div class="counts">
+      <div><i class="dot haiku"></i><span id="cHaiku">0</span> Haiku</div>
+      <div><i class="dot sonnet"></i><span id="cSonnet">0</span> Sonnet</div>
+      <div><i class="dot opus"></i><span id="cOpus">0</span> Opus</div>
+      <div><i class="dot fable"></i><span id="cFable">0</span> Fable</div>
+    </div>
+    <div class="learn" id="learn"></div>
+    <div class="learn" id="avail"></div>
+  </section>
+
+  <details class="settings" open>
+    <summary>Test &amp; settings</summary>
+    <div class="row">
+      <button class="ghost primary" id="testSwitch">Test model switch</button>
+      <button class="ghost" id="copyReport" hidden>Copy report</button>
+    </div>
+    <pre class="report" id="report" hidden></pre>
+    <label class="field">
+      <span>Model you'd normally leave selected</span>
+      <select id="baseline">
+        <option value="haiku">Haiku</option>
+        <option value="sonnet">Sonnet</option>
+        <option value="opus">Opus</option>
+        <option value="fable">Fable</option>
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" id="showBadge" /> Show routing badge after each send</label>
+    <label class="check"><input type="checkbox" id="controlThinking" /> Also adjust extended thinking (needs a selector in config.js)</label>
+    <div class="row">
+      <button class="ghost" id="resetLearning">Reset learned thresholds</button>
+      <button class="ghost" id="resetStats">Reset stats</button>
+    </div>
+  </details>
+
+  <script src="../shared/config.js"></script>
+  <script src="../shared/analyzer.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

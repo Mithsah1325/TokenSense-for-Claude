@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Smart Router",
+  "version": "0.4.0",
+  "description": "Routes each prompt on claude.ai to the cheapest Claude model that's still good enough, and learns from your feedback.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://claude.ai/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Claude Smart Router"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://claude.ai/*"
+      ],
+      "js": [
+        "shared/config.js",
+        "shared/analyzer.js",
+        "content/content.js"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "128": "icons/icon128.png"
+  }
+}
