@@ -1,4 +1,4 @@
-# Claude Smart Router
+# TokenSense for Claude
 
 A Chrome extension for claude.ai that scores each prompt's difficulty before it's
 sent, switches the model picker to the cheapest tier that should handle it
