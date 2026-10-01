@@ -2,7 +2,7 @@
 
 A Chrome extension for claude.ai that scores each prompt's difficulty before it's
 sent, switches the model picker to the cheapest tier that should handle it
-(Haiku → Sonnet → Opus → Fable), and learns from your.
+(Haiku → Sonnet → Opus → Fable), and learns from your feedback and pattern.
 
 The extension reads your model menu the first time it switches and remembers which
 tiers your plan actually offers. A tier you don't have (e.g. Fable) falls back to
