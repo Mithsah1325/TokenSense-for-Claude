@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Claude Smart Router",
+  "name": "TokenSense for Claude",
   "version": "0.4.0",
   "description": "Routes each prompt on claude.ai to the cheapest Claude model that's still good enough, and learns from your feedback.",
   "permissions": [
@@ -12,7 +12,7 @@
   ],
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Claude Smart Router"
+    "default_title": "TokenSense for Claude"
   },
   "content_scripts": [
     {
