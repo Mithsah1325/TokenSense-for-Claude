@@ -2,7 +2,7 @@
 
 A Chrome extension for claude.ai that scores each prompt's difficulty before it's
 sent, switches the model picker to the cheapest tier that should handle it
-(Haiku → Sonnet → Opus → Fable), and learns from your 👍/👎.
+(Haiku → Sonnet → Opus → Fable), and learns from your.
 
 The extension reads your model menu the first time it switches and remembers which
 tiers your plan actually offers. A tier you don't have (e.g. Fable) falls back to
@@ -13,7 +13,7 @@ the next one down, so routing never targets a model that isn't in your picker.
 1. Open `chrome://extensions`, turn on **Developer mode**.
 2. **Load unpacked** → pick this folder.
 3. Open claude.ai, type a prompt, press Enter. A badge appears bottom-right
-   showing where it was routed and why. Rate it; 👎 offers "Retry with <next tier>".
+   showing where it was routed and why. Rate it; offers "Retry with <next tier>".
 4. Click the toolbar icon for modes (Saver / Balanced / Quality), savings, and a
    box where you can paste any prompt to see where it would land.
 
@@ -26,8 +26,8 @@ the next one down, so routing never targets a model that isn't in your picker.
 | `content/content.js` | Intercepts Enter / Send on claude.ai, scores, switches the model via the UI's picker, re-sends, shows the badge, records stats and feedback. |
 | `popup/` | Mode picker, difficulty meter, savings, live "try a prompt", settings. |
 
-Learning is deliberately simple: a 👎 on a tier lowers that tier's threshold by
-3 points (it gets fewer hard prompts); a 👍 raises it by 1. Clamped to ±15.
+Learning is deliberately simple: a on a tier lowers that tier's threshold by
+3 points (it gets fewer hard prompts); a raises it by 1. Clamped to ±15.
 "Estimated savings" compares relative cost weights (Haiku 1 / Sonnet 3 / Opus 15,
 editable) against the model you'd otherwise leave selected.
 
@@ -66,6 +66,6 @@ it; the fix is usually one or two selector lines in `shared/config.js`.
 
 - Optional classifier mode: send the prompt to Haiku via the API (user's own key)
   for a difficulty verdict when heuristics are unsure (score 30–60).
-- Per-task-type stats (which signals led to 👎) instead of a single threshold shift.
+- Per-task-type stats (which signals led to) instead of a single threshold shift.
 - Conversation-aware scoring: later turns in a hard thread shouldn't drop to Haiku.
 - Auto-escalation: detect weak answers (very short, hedged, "I can't") and offer retry.
