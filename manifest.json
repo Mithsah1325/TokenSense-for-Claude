@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TokenSense for Claude",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Routes each prompt on claude.ai to the cheapest Claude model that's still good enough, and learns from your feedback.",
   "permissions": [
     "storage",
