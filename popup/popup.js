@@ -14,6 +14,10 @@
     const d = await chrome.storage.local.get(["settings", "stats"]);
     settings = { ...CSR.DEFAULT_SETTINGS, ...(d.settings || {}) };
     settings.adjust = { ...CSR.DEFAULT_SETTINGS.adjust, ...(settings.adjust || {}) };
+    if (Array.isArray(settings.availableTiers) && settings.availableTiers.length < 2) {
+      settings.availableTiers = null;
+      saveSettings();
+    }
     stats = { ...JSON.parse(JSON.stringify(CSR.DEFAULT_STATS)), ...(d.stats || {}) };
   }
   const saveSettings = () => chrome.storage.local.set({ settings });

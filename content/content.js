@@ -17,6 +17,10 @@
     const data = await chrome.storage.local.get(["settings", "stats"]);
     settings = { ...CSR.DEFAULT_SETTINGS, ...(data.settings || {}) };
     settings.adjust = { ...CSR.DEFAULT_SETTINGS.adjust, ...(settings.adjust || {}) };
+    if (Array.isArray(settings.availableTiers) && settings.availableTiers.length < 2) {
+      settings.availableTiers = null;
+      saveSettings();
+    }
     stats = { ...JSON.parse(JSON.stringify(CSR.DEFAULT_STATS)), ...(data.stats || {}) };
   }
   const saveSettings = () => chrome.storage.local.set({ settings });
@@ -105,8 +109,9 @@
   }
   function rememberAvailable(items) {
     const found = CSR.TIERS.filter((t) => items.some((el) => label(el).toLowerCase().includes(CSR.TIER_INFO[t].match)));
-    if (found.length <= 1 && (settings.availableTiers || []).length > found.length) return; // don't shrink on a partial view
-    if (!found.length) return;
+    // A menu scan that sees only one model is commonly partial and can be
+    // just the currently selected item. Never persist it as the full plan.
+    if (found.length < 2) return;
     if (found.join() !== (settings.availableTiers || []).join()) { settings.availableTiers = found; saveSettings(); LOG("available tiers", found); }
   }
   function closeMenus() { document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); document.body.click(); }

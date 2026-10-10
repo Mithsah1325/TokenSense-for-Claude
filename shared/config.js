@@ -17,7 +17,8 @@ CSR.TIER_INFO = {
 // Not every plan offers every tier. The content script reads the model menu the
 // first time it opens and stores the tiers it actually found in
 // settings.availableTiers; the analyzer then falls back to the nearest available
-// tier (Fable → Opus, missing Haiku → Sonnet). null means "not detected yet".
+// tier (Fable → Opus, missing Haiku → Sonnet). null means "not detected yet";
+// one detected tier is treated as an incomplete menu scan.
 // `cost` is a rough relative weight (roughly API price ratios) used only for the
 // "estimated savings" figure. Edit freely; it changes nothing about routing.
 

@@ -21,7 +21,7 @@ the next one down, so routing never targets a model that isn't in your picker.
 
 | File | Role |
 | --- | --- |
-| `shared/analyzer.js` | Pure heuristic scorer, 0–100. Length, pasted code, number of sub-tasks, and keyword signals (definition/proofread/translate pull down; analyze/design/prove/optimize/trade-offs push up). Short lookups in hard domains are capped so "What is SIEM?" stays cheap. |
+| `shared/analyzer.js` | Pure heuristic scorer, 0–100. Uses benchmark-informed task floors: Haiku for routine lookup/extraction, Sonnet for ordinary coding/debugging, Opus for architecture/research/advanced reasoning, and Fable for exceptional long-horizon or frontier work. Length, pasted code, number of sub-tasks, and keyword signals refine the choice. Short lookups in hard domains are capped so "What is SIEM?" stays cheap. |
 | `shared/config.js` | Tiers, mode thresholds, relative cost weights, DOM selectors. |
 | `content/content.js` | Intercepts Enter / Send on claude.ai, scores, switches the model via the UI's picker, re-sends, shows the badge, records stats and feedback. |
 | `popup/` | Mode picker, difficulty meter, savings, live "try a prompt", settings. |
@@ -61,6 +61,27 @@ it; the fix is usually one or two selector lines in `shared/config.js`.
   regenerating in place. Simpler and robust; regenerate-in-place can come later.
 - Tokens aren't reduced by switching models — cost and compute are. That's the
   objective here.
+
+  ## Routing policy
+
+  The policy follows Anthropic's model-selection guidance and public benchmark
+  evidence rather than treating Fable as the default for every difficult prompt:
+
+  - **Haiku:** short lookups, extraction, classification, translation, summaries,
+    and other high-volume routine work.
+  - **Sonnet:** normal coding, debugging, document work, and moderate
+    long-context synthesis.
+  - **Opus:** architecture, difficult debugging, research synthesis, advanced
+    mathematics, and consequential analysis.
+  - **Fable:** explicit long-horizon agentic work, novel/frontier reasoning, or
+    unusually demanding multi-step tasks. It is a deliberate escalation because
+    independent broad benchmarks do not consistently place it above Opus for
+    every task.
+
+  Sources: [Anthropic model overview](https://platform.claude.com/docs/en/models/overview),
+  [choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model),
+  [Sonnet 5.5 announcement](https://www.anthropic.com/claude-sonnet-5-5), and
+  [Opus 5.5 announcement](https://www.anthropic.com/claude-opus-5-5).
 
 ## Roadmap ideas
 

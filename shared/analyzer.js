@@ -43,6 +43,21 @@
     [/\b(ambiguous|unclear|open[- ]ended|philosoph|ethic)/i, 7, "open-ended"],
   ];
 
+  // Benchmark-informed capability floors. These do not always select the
+  // most expensive model; they prevent routine keyword scoring from sending a
+  // task below the tier that is normally best suited to it.
+  const TASK_FLOORS = [
+    [/\b(implement|build|write|modify|refactor|patch|fix)\b[\s\S]{0,120}\b(code|function|class|api|app|feature|project|repository|repo|script)\b/i, "sonnet", "coding task"],
+    [/\b(debug|diagnos|root cause|stack trace|test failure|regression|crash|exception|bug)\b/i, "sonnet", "debugging task"],
+    [/\b(design|architect|architecture|system design|distributed system|migration plan|technical strategy)\b/i, "opus", "architecture task"],
+    [/\b(prove|proof|theorem|lemma|derive|derivation|formal reasoning|mathematical reasoning|differential equation)\b/i, "opus", "advanced reasoning"],
+    [/\b(research|literature review|systematic review|evaluate conflicting|compare sources|evidence synthesis)\b/i, "opus", "research synthesis"],
+    [/\b(legal|contract|compliance|regulat|liabilit|high[- ]stakes|medical diagnosis|financial advice)\b/i, "opus", "consequential domain"],
+    [/\b(long[- ]horizon|long horizon|autonomous agent|agentic workflow|multi[- ]hour|end[- ]to[- ]end agent|many tools|novel proof|frontier reasoning)\b/i, "fable", "frontier task"],
+  ];
+
+  const TIER_INDEX = { haiku: 0, sonnet: 1, opus: 2, fable: 3 };
+
   function countMatches(re, text) {
     const m = text.match(new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g"));
     return m ? m.length : 0;
@@ -107,6 +122,18 @@
     else if (score <= sonnetMax) ideal = "sonnet";
     else if (score <= opusMax) ideal = "opus";
 
+    // A task category can require a stronger baseline even when the wording is
+    // short. Use the highest matching floor so model choice follows capability
+    // evidence, not only length and keyword counts.
+    let floor = "haiku";
+    for (const [re, tier, why] of TASK_FLOORS) {
+      if (re.test(raw) && TIER_INDEX[tier] > TIER_INDEX[floor]) {
+        floor = tier;
+        reasons.push(why);
+      }
+    }
+    if (TIER_INDEX[floor] > TIER_INDEX[ideal]) ideal = floor;
+
     const tier = nearestAvailable(ideal, settings.availableTiers);
     if (tier !== ideal) reasons.push(`${CSR.TIER_INFO[ideal].label} not in your picker`);
 
@@ -116,7 +143,11 @@
   // Step down to the closest cheaper tier the user's plan offers; if nothing cheaper
   // exists, step up. `available` null/empty = not detected yet → assume all.
   function nearestAvailable(tier, available) {
-    if (!available || !available.length) return tier;
+    // A one-item result is usually a partial menu scan (often just the
+    // currently selected model), not a reliable list of the user's plan.
+    // Treat it as unknown so stale ["haiku"] state cannot downgrade every
+    // difficult prompt to Haiku.
+    if (!available || available.length < 2) return tier;
     if (available.includes(tier)) return tier;
     const i = CSR.TIERS.indexOf(tier);
     for (let j = i - 1; j >= 0; j--) if (available.includes(CSR.TIERS[j])) return CSR.TIERS[j];
