@@ -28,9 +28,10 @@ the next one down, so routing never targets a model that isn't in your picker.
 
 Learning is deliberately simple: a on a tier lowers that tier's threshold by
 3 points (it gets fewer hard prompts); a raises it by 1. Clamped to ±15.
-"Estimated savings" compares relative cost weights (Haiku 1 / Sonnet 3 / Opus 15,
+"Estimated cost" compares relative cost weights (Haiku 1 / Sonnet 3 / Opus 15,
 editable) against the currently selected baseline model and recalculates from the
-routed model counts, so changing the baseline does not leave a stale percentage.
+routed model counts. It shows a percentage saved when routing is cheaper, or an
+explicit cost multiplier when routing is more expensive.
 
 ## If the model doesn't switch
 

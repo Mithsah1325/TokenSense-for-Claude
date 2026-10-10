@@ -72,7 +72,10 @@
     const actualCost = CSR.TIERS.reduce((n, t) => n + (stats.routed[t] || 0) * CSR.TIER_INFO[t].cost, 0);
     const baselineCost = total * (CSR.TIER_INFO[settings.baseline]?.cost || CSR.TIER_INFO.sonnet.cost);
     const saved = baselineCost > 0 ? Math.round((1 - actualCost / baselineCost) * 100) : null;
-    $("savings").textContent = saved === null ? "—" : (saved >= 0 ? `${saved}%` : `+${-saved}%`);
+    const costRatio = baselineCost > 0 ? actualCost / baselineCost : null;
+    $("savings").textContent = saved === null ? "—"
+      : saved >= 0 ? `${saved}% saved`
+      : `${costRatio.toFixed(1)}× cost`;
     $("savings").style.color = saved === null ? "" : saved >= 0 ? "var(--haiku)" : "var(--opus)";
     $("baselineName").textContent = CSR.TIER_INFO[settings.baseline].label;
     $("cHaiku").textContent = stats.routed.haiku || 0;
