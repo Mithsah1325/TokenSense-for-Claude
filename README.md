@@ -21,7 +21,7 @@ the next one down, so routing never targets a model that isn't in your picker.
 
 | File | Role |
 | --- | --- |
-| `shared/analyzer.js` | Pure heuristic scorer, 0–100. Uses benchmark-informed task floors: Haiku for routine lookup/extraction, Sonnet for ordinary coding/debugging, Opus for architecture/research/advanced reasoning, and Fable for exceptional long-horizon or frontier work. Length, pasted code, number of sub-tasks, and keyword signals refine the choice. Short lookups in hard domains are capped so "What is SIEM?" stays cheap. |
+| `shared/analyzer.js` | Pure heuristic scorer, 0–100. Uses benchmark-informed task floors: Haiku for routine lookup/extraction, Sonnet for ordinary coding/debugging, Opus for architecture/research/advanced reasoning, and Fable for exceptional long-horizon or frontier work. Length, pasted code, number of sub-tasks, and keyword signals refine the choice; the displayed score is raised into the selected capability band when necessary. Short lookups in hard domains are capped so "What is SIEM?" stays cheap. |
 | `shared/config.js` | Tiers, mode thresholds, relative cost weights, DOM selectors. |
 | `content/content.js` | Intercepts Enter / Send on claude.ai, scores, switches the model via the UI's picker, re-sends, shows the badge, records stats and feedback. |
 | `popup/` | Mode picker, difficulty meter, savings, live "try a prompt", settings. |
@@ -29,7 +29,8 @@ the next one down, so routing never targets a model that isn't in your picker.
 Learning is deliberately simple: a on a tier lowers that tier's threshold by
 3 points (it gets fewer hard prompts); a raises it by 1. Clamped to ±15.
 "Estimated savings" compares relative cost weights (Haiku 1 / Sonnet 3 / Opus 15,
-editable) against the model you'd otherwise leave selected.
+editable) against the currently selected baseline model and recalculates from the
+routed model counts, so changing the baseline does not leave a stale percentage.
 
 ## If the model doesn't switch
 

@@ -66,7 +66,12 @@
     } else $("tryOut").textContent = "";
 
     const total = CSR.TIERS.reduce((n, t) => n + (stats.routed[t] || 0), 0);
-    const saved = stats.costBaseline > 0 ? Math.round((1 - stats.costSpent / stats.costBaseline) * 100) : null;
+    // Recalculate both sides from the current route counts. This keeps the
+    // percentage correct when the user changes the baseline model; the old
+    // cumulative costBaseline value used the baseline selected at send time.
+    const actualCost = CSR.TIERS.reduce((n, t) => n + (stats.routed[t] || 0) * CSR.TIER_INFO[t].cost, 0);
+    const baselineCost = total * (CSR.TIER_INFO[settings.baseline]?.cost || CSR.TIER_INFO.sonnet.cost);
+    const saved = baselineCost > 0 ? Math.round((1 - actualCost / baselineCost) * 100) : null;
     $("savings").textContent = saved === null ? "—" : (saved >= 0 ? `${saved}%` : `+${-saved}%`);
     $("savings").style.color = saved === null ? "" : saved >= 0 ? "var(--haiku)" : "var(--opus)";
     $("baselineName").textContent = CSR.TIER_INFO[settings.baseline].label;

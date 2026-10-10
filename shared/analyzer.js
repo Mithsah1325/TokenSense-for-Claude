@@ -134,6 +134,24 @@
     }
     if (TIER_INDEX[floor] > TIER_INDEX[ideal]) ideal = floor;
 
+    // Keep the displayed score and meter consistent with a capability floor.
+    // For example, a short debugging request may have a low lexical score but
+    // still belongs in Sonnet's band because debugging is not a Haiku task.
+    const floorScore = {
+      haiku: 0,
+      sonnet: haikuMax + 1,
+      opus: sonnetMax + 1,
+      fable: opusMax + 1,
+    };
+    if (floorScore[floor] > score) {
+      score = Math.min(100, floorScore[floor]);
+      reasons.push("score raised to match task capability");
+    }
+    if (score <= haikuMax) ideal = "haiku";
+    else if (score <= sonnetMax) ideal = "sonnet";
+    else if (score <= opusMax) ideal = "opus";
+    else ideal = "fable";
+
     const tier = nearestAvailable(ideal, settings.availableTiers);
     if (tier !== ideal) reasons.push(`${CSR.TIER_INFO[ideal].label} not in your picker`);
 
